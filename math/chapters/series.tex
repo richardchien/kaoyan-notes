@@ -1,0 +1,86 @@
+\chapter{无穷级数}
+
+\section{概念和性质}
+
+\subsection{等比级数}
+
+$$
+    \sum_{n=0}^{\infty} aq^{n} = a + aq + aq^{2} + \dots + aq^{n} \dots
+    \begin{cases}
+        = \frac{a}{1-q}, & |q| < 1,    \\
+        \mbox{发散},     & |q| \geq 1.
+    \end{cases}
+$$
+
+\subsection{调和级数}
+
+TODO
+
+\subsection{p 级数}
+
+TODO
+
+\subsection{敛散性}
+
+级数收敛的必要条件: $\lim_{n\to\infty} u_n = 0$.
+
+\section{常数项级数审敛法}
+
+\subsection{正项级数}
+
+收敛的充要条件: 部分和数列 $\{S_n\}$ 有界.
+
+\subsubsection{比较审敛法}
+
+若 $u_n \leq v_n$, 则
+$$
+    \begin{cases}
+        \sum_{n=1}^\infty v_n \mbox{收敛} \Longrightarrow \sum_{n=1}^\infty u_n \mbox{收敛}, \\
+        \sum_{n=1}^\infty u_n \mbox{发散} \Longrightarrow \sum_{n=1}^\infty v_n \mbox{发散}.
+    \end{cases}
+$$
+
+\subsubsection{比值审敛法 (达朗贝尔判别法)}
+
+$$
+    \lim_{n\to\infty} \frac{u_{n+1}}{u_{n}} = \rho
+    \begin{cases}
+        < 1 \Longrightarrow \mbox{收敛}, \\
+        > 1 \Longrightarrow \mbox{发散}, \\
+        = 1 \Longrightarrow \mbox{不确定}.
+    \end{cases}
+$$
+
+\subsubsection{根值审敛法 (柯西判别法)}
+
+$$
+    \lim_{n\to\infty} \sqrt[n]{u_n} = \rho
+    \begin{cases}
+        < 1 \Longrightarrow \mbox{收敛}, \\
+        > 1 \Longrightarrow \mbox{发散}, \\
+        = 1 \Longrightarrow \mbox{不确定}.
+    \end{cases}
+$$
+
+\subsection{交错级数}
+
+\subsubsection{莱布尼茨定理}
+
+对 $\sum_{n=1}^{\infty}(-1)^{n-1} u_{n}$, 若有
+
+\begin{enumerate}
+    \item $u_n \geq u_{n+1}$ (绝对值递减),
+    \item $\lim _{n \rightarrow \infty} u_{n}=0$,
+\end{enumerate}
+
+则收敛, 且和 $S \leq u_1$.
+
+\subsection{绝对收敛与条件收敛}
+
+绝对收敛: $\sum_{n=1}^{\infty} |u_n|$ 收敛.
+
+条件收敛: $\sum_{n=1}^{\infty} u_n$ 收敛, $\sum_{n=1}^{\infty} |u_n|$ 发散.
+
+\section{幂级数}
+
+\subsection{阿贝尔定理}

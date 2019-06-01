@@ -49,14 +49,21 @@ seta20.2:
 
 这里 0xDF 的二进制是 11011111，根据实验指导书和 OSDev Wiki 相关文档，其中第 1 bit 是 A20 使能信号，这里置为 1。但都没有提到其它位为什么这样设置。
 
-于是在 `seta20.1` 之前加上了下面代码（`wait8042io` 是把等待 I/O 的那几行逻辑提取成了子程序）：
+于是在 `seta20.1` 之前加上了下面代码：
 
 ```s
-call wait8042io
-movb $0xd0, %al
-outb %al, $0x64
-call wait8042io
-inb $0x60, %al
+    # Read the original value of 8042 Output Port.
+reada20.1:
+    inb $0x64, %al
+    testb $0x2, %al
+    jnz reada20.1
+    movb $0xd0, %al
+    outb %al, $0x64
+reada20.2:
+    inb $0x64, %al
+    testb $0x2, %al
+    jnz reada20.2
+    inb $0x60, %al
 ```
 
 通过单步调试查看这段代码之后 AL 的值，发现是 11001111，又把这段代码移到 `seta20.2` 后面，确实变成了我们所期望的 11011111，但这里变动的并不是第 1 bit（无论从低到高数还是从高到低数）。TODO：限于时间原因，暂时无法深究原因。
@@ -131,11 +138,12 @@ protcseg:
 
 首先把 CR0 的值移到 EAX，然后将第 0 bit（保护模式使能位）置一，再放回，这时就开启了保护模式。接着使用 `ljmp` 长跳转指令，通过指定内核代码段，跳转到 `protcseg` 标签，同时也使 CS 寄存器值被正确地设置为分段机制下的内核代码段。
 
-`protcseg` 中对各数据段寄存器进行了设置，这是已完成进入保护模式的所有工作。最后调用了 C 语言编写的 `bootmain` 函数，进入加载内核的过程。
+`protcseg` 中对各数据段寄存器进行了设置，这是已完成进入保护模式的所有工作。最后设置了 EBP 和 ESP，分别为栈帧基地址（这里为 0x0）和栈顶地址（这里为 0x7C00，栈是向内存低地址增长的，也就是说 PUSH 时 ESP 会减小），然后调用了 C 语言编写的 `bootmain` 函数，进入加载内核的过程。
 
 ## 参考资料
 
-- [实验指导书 2.3.2 bootloader 启动过程](https://objectkuan.gitbooks.io/ucore-docs/content/lab1/lab1_appendix_a20.html)
+- [实验指导书 2.3.2.1 保护模式和分段机制](https://objectkuan.gitbooks.io/ucore-docs/content/lab1/lab1_3_2_1_protection_mode.html)
+- [实验指导书 2.3.2.2 地址空间](https://objectkuan.gitbooks.io/ucore-docs/content/lab1/lab1_3_2_2_address_space.html)
 - [实验指导书 2.5 关于 A20 Gate](https://objectkuan.gitbooks.io/ucore-docs/content/lab1/lab1_appendix_a20.html)
 - [Intel 80386 Programmer's Reference Manual](https://css.csail.mit.edu/6.858/2014/readings/i386.pdf), Chapter 4 Systems Architecture, Chapter 5 Memory Management, Chapter 10 Initialization, Chapter 17 80386 Instruction Set
 - ["8042" PS/2 Controller - OSDev Wiki](https://wiki.osdev.org/%228042%22_PS/2_Controller)

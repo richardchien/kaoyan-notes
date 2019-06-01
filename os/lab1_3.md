@@ -69,10 +69,73 @@ inb $0x60, %al
 
 段描述符数据结构如下（对应了 `kern/mm/mmu.h` 中的 `struct segdesc` 结构体）：
 
-！[Segment-Descriptor Format](images/segment-descriptor-format.png)
+![Segment-Descriptor Format](images/segment-descriptor-format.png)
+
+段选择子（保护模式下，段寄存器所保存的内容）结构如下：
+
+![Segment Selector](images/segment-selector.png)
+
+了解了段式内存管理机制后，来看 `boot/bootasm.S` 加载 GDT 的代码：
+
+```s
+lgdt gdtdesc
+```
+
+直接使用了 `lgdt` 指令，`gdtdesc` 是一个标签（也就是一个地址），指向 `boot/bootasm.S` 结尾的内容：
+
+```s
+# Bootstrap GDT
+.p2align 2                                    # force 4 byte alignment
+gdt:
+    SEG_NULLASM                               # null seg， selector: 0x0
+    SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)     # code seg for bootloader and kernel, selector: 0x8
+    SEG_ASM(STA_W, 0x0, 0xffffffff)           # data seg for bootloader and kernel, selector: 0x10
+
+gdtdesc:
+    .word 0x17                                # sizeof(gdt) - 1 (8*3-1 = 23 = 0x17)
+    .long gdt                                 # address gdt
+```
+
+注意到，这里 `gdtdesc` 并不是真正的 GDT。真正的 GDT 是 `gdt` 标签所指向的内容，有三条记录（也就是三个段描述符），第一个是空，第二个是可读可执行的内核代码段，第三个是可写的内核数据段，根据之前的段描述符结构。每个描述符占 8 字节（64 位），因此三个段的段选择子分别是 0x0、0x8、0x10。
+
+而 `gdtdesc` 是对 GDT 的描述（在 `libs/x86.h` 中由 `struct pseudodesc` 结构体表示，称为「伪描述符」），它包含了 GDT 的大小和地址（即 16 位的 limit 和 32 位的 base），当执行 `lgdt` 指令时，这个 limit 和 base 被放进了 GPTR 寄存器。
+
+## 进入保护模式
+
+加载 GDT 之后，使能并进入保护模式。代码如下：
+
+```s
+    movl %cr0, %eax
+    orl $CR0_PE_ON, %eax
+    movl %eax, %cr0
+
+    # Jump to next instruction, but in 32-bit code segment.
+    # Switches processor into 32-bit mode.
+    ljmp $PROT_MODE_CSEG, $protcseg
+
+.code32                           # Assemble for 32-bit mode
+protcseg:
+    # Set up the protected-mode data segment registers
+    movw $PROT_MODE_DSEG, %ax     # Our data segment selector
+    movw %ax, %ds                 # -> DS: Data Segment
+    movw %ax, %es                 # -> ES: Extra Segment
+    movw %ax, %fs                 # -> FS
+    movw %ax, %gs                 # -> GS
+    movw %ax, %ss                 # -> SS: Stack Segment
+
+    # Set up the stack pointer and call into C. The stack region is from 0--start(0x7c00)
+    movl $0x0, %ebp
+    movl $start, %esp
+    call bootmain
+```
+
+首先把 CR0 的值移到 EAX，然后将第 0 bit（保护模式使能位）置一，再放回，这时就开启了保护模式。接着使用 `ljmp` 长跳转指令，通过指定内核代码段，跳转到 `protcseg` 标签，同时也使 CS 寄存器值被正确地设置为分段机制下的内核代码段。
+
+`protcseg` 中对各数据段寄存器进行了设置，这是已完成进入保护模式的所有工作。最后调用了 C 语言编写的 `bootmain` 函数，进入加载内核的过程。
 
 ## 参考资料
 
-- [Intel 80386 Programmer's Reference Manual](https://css.csail.mit.edu/6.858/2014/readings/i386.pdf), Chapter 5 Memory Management, Chapter 10 Initialization
+- [实验指导书 2.3.2 bootloader 启动过程](https://objectkuan.gitbooks.io/ucore-docs/content/lab1/lab1_appendix_a20.html)
 - [实验指导书 2.5 关于 A20 Gate](https://objectkuan.gitbooks.io/ucore-docs/content/lab1/lab1_appendix_a20.html)
+- [Intel 80386 Programmer's Reference Manual](https://css.csail.mit.edu/6.858/2014/readings/i386.pdf), Chapter 4 Systems Architecture, Chapter 5 Memory Management, Chapter 10 Initialization, Chapter 17 80386 Instruction Set
 - ["8042" PS/2 Controller - OSDev Wiki](https://wiki.osdev.org/%228042%22_PS/2_Controller)

@@ -28,7 +28,7 @@ TODO
 
 \subsection{正项级数}
 
-收敛的充要条件: 部分和数列 $\{S_n\}$ 有界.
+正向级数收敛的充要条件是部分和数列 $\{S_n\}$ 有界.
 
 \subsubsection{比较审敛法}
 
@@ -37,6 +37,17 @@ $$
     \begin{cases}
         \sum_{n=1}^\infty v_n \mbox{收敛} \Longrightarrow \sum_{n=1}^\infty u_n \mbox{收敛}, \\
         \sum_{n=1}^\infty u_n \mbox{发散} \Longrightarrow \sum_{n=1}^\infty v_n \mbox{发散}.
+    \end{cases}
+$$
+
+\subsubsection{比较审敛法的极限形式}
+
+$$
+\lim _{n \to \infty} \frac{u_{n}}{v_{n}} =
+    \begin{cases}
+        0, & \mbox{则} \sum_{n=1}^\infty v_n \mbox{收敛} \Longrightarrow \sum_{n=1}^\infty u_n \mbox{收敛}, \\
+        +\infty, & \mbox{则} \sum_{n=1}^\infty v_n \mbox{发散} \Longrightarrow \sum_{n=1}^\infty u_n \mbox{发散}, \\
+        A \neq 0, & \mbox{同敛散}.
     \end{cases}
 $$
 
@@ -84,3 +95,41 @@ $$
 \section{幂级数}
 
 \subsection{阿贝尔定理}
+
+\begin{enumerate}
+    \item 若 $\sum_{n=0}^{\infty} a_nx^n$ 当 $x=x_0$ 时收敛, 则 $|x| < |x_0|$ 时绝对收敛,
+    \item 若 $\sum_{n=0}^{\infty} a_nx^n$ 当 $x=x_1$ 时发散, 则 $|x| > |x_1|$ 时发散.
+\end{enumerate}
+
+由此推出, 若不是只在 $x=0$ 点收敛, 则必存在 $R>0$, 使
+
+\begin{enumerate}
+    \item $|x|<R$ 时, 绝对收敛,
+    \item $|x|>R$ 时, 发散,
+    \item $x=\pm R$ 时,不确定.
+\end{enumerate}
+
+\subsubsection{求收敛域方法}
+
+\begin{enumerate}
+    \item 先通过 $\lim_{n\to\infty} |\frac{u_{n+1}(x)}{u_{n}(x)}| = \rho(x) < 1$ 或 $\lim_{n\to\infty} \sqrt[n]{u_n(x)} = \rho(x) < 1$ 求出收敛区间,
+    \item 在讨论两个端点处的敛散性, 得收敛域.
+\end{enumerate}
+
+\subsection{函数展开成幂级数}
+
+\subsubsection{常用展开式}
+
+\begin{align*}
+    & \frac{1}{1+x} = \sum_{n=0}^{\infty} (-1)^{n} x^{n}, & -1 < x < 1 \\
+    & \frac{1}{1-x} = \sum_{n=0}^{\infty} x^{n}, & -1 < x < 1 \\
+    & \ln(1+x) = \sum_{n=0}^{\infty} \frac{(-1)^n}{n+1} x^{n+1} = \sum_{n=1}^{\infty} \frac{(-1)^{n-1}}{n} x^{n}, & -1 < x \leq 1 \\
+    & e^x = \sum_{n=0}^{\infty} \frac{1}{n!} x^{n}, & -\infty < x < +\infty \\
+    & a^x = \sum_{n=0}^{\infty} \frac{(\ln a)^n}{n!} x^{n}, & -\infty < x < +\infty \\
+    & \sin x = \sum_{n=0}^{\infty} \frac{(-1)^{n}}{(2n+1)!} x^{2n+1}, & -\infty < x < +\infty \\
+    & \cos x = \sum_{n=0}^{\infty} \frac{(-1)^{n}}{(2n)!} x^{2n}, & -\infty < x < +\infty \\
+    & \frac{1}{1+x^2} = \sum_{n=0}^{\infty} (-1)^{n} x^{2n}, & -1 < x < 1 \\
+    & \arctan x = \sum_{n=0}^{\infty} \frac{(-1)^{n}}{2n+1} x^{2n+1}, & -1 < x \leq 1 \\
+\end{align*}
+
+\section{傅里叶级数}

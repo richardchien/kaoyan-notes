@@ -80,7 +80,7 @@ ELF 头部读取完成后，通过比对 `ELFHDR->e_magic` 验证了 ELF 格式�
 
 这时候在 GDB 打印 0x10000 地址的内存数据可以看到 ELF 头部确实已经在这里：
 
-![Kernel ELF Header in Memory](images/kernel-elf-hdr-in-mem.png)
+![Kernel ELF Header in Memory](images/lab1/kernel-elf-hdr-in-mem.png)
 
 ## 读取程序段（Program Segment）
 
@@ -116,7 +116,7 @@ kern_init(void) {
 
 尝试将 `tools/kernel.ld` 中的 0x100000 改为 0x101000，可以预期：`bin/kernel` 中第一个程序段仍然在 0x1000 位置，ELF 头部仍然加载到了内存的 0x10000 地址处，而 `kern_init()` 函数在内存中的位置（也就是内核的第一个程序段在内存中的起始位置）应该变为 0x101000。最终结果也确实如此：
 
-![Kernel Entry at 0x101000](images/kernel_entry_at_0x101000.png)
+![Kernel Entry at 0x101000](images/lab1/kernel_entry_at_0x101000.png)
 
 ## 参考资料
 

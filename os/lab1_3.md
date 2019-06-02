@@ -72,15 +72,15 @@ reada20.2:
 
 在保护模式中，逻辑地址（段选择子 + 偏移地址）转换为线性地址需要用到 GDT。CPU 首先从段选择子中取出高 12 位的描述符表索引值，然后从 GDT 中获取相应索引对应的段描述符，其中包含了段基址，加上偏移地址也就是线性地址。示意图如下：
 
-![Segment Translation](images/segment-trans.png)
+![Segment Translation](images/lab1/segment-trans.png)
 
 段描述符数据结构如下（对应了 `kern/mm/mmu.h` 中的 `struct segdesc` 结构体）：
 
-![Segment-Descriptor Format](images/segment-descriptor-format.png)
+![Segment-Descriptor Format](images/lab1/segment-descriptor-format.png)
 
 段选择子（保护模式下，段寄存器所保存的内容）结构如下：
 
-![Segment Selector](images/segment-selector.png)
+![Segment Selector](images/lab1/segment-selector.png)
 
 了解了段式内存管理机制后，来看 `boot/bootasm.S` 加载 GDT 的代码：
 
@@ -138,7 +138,7 @@ protcseg:
 
 首先把 CR0 的值移到 EAX，然后将第 0 bit（保护模式使能位）置一，再放回，这时就开启了保护模式。接着使用 `ljmp` 长跳转指令，通过指定内核代码段，跳转到 `protcseg` 标签，同时也使 CS 寄存器值被正确地设置为分段机制下的内核代码段。
 
-`protcseg` 中对各数据段寄存器进行了设置，这是已完成进入保护模式的所有工作。最后设置了 EBP 和 ESP，分别为栈帧基地址（这里为 0x0）和栈顶地址（这里为 0x7C00，栈是向内存低地址增长的，也就是说 PUSH 时 ESP 会减小），然后调用了 C 语言编写的 `bootmain` 函数，进入加载内核的过程。
+`protcseg` 中对各数据段寄存器进行了设置，这是已完成进入保护模式的所有工作。最后设置了 EBP 和 ESP，分别为栈帧基地址（这里为 0x0）和栈底地址（这里为 0x7C00，栈是向内存低地址增长的，也就是说 PUSH 时 ESP 会减小，由于逻辑上的栈底的内存地址最高，所以有些地方也称为「栈顶」），然后调用了 C 语言编写的 `bootmain` 函数，进入加载内核的过程。
 
 ## 参考资料
 

@@ -104,8 +104,8 @@ vector0:
 ```c
 switch (tf->tf_trapno) {
     case IRQ_OFFSET + IRQ_TIMER:
-        ticks = (ticks + 1) % TICK_NUM;
-        if (ticks == 0) {
+        ticks++;
+        if (ticks % TICK_NUM == 0) {
             print_ticks();
         }
         break;

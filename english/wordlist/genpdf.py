@@ -9,7 +9,7 @@ d = os.path.dirname(sys.argv[0])
 os.chdir(d)
 
 TEMPLATE_BEGIN = r"""
-\documentclass[a4paper, 11pt]{ctexart}
+\documentclass[b5paper, 11pt]{ctexart}
 
 \input{../../../tex-templates/preamble.tex}
 \usepackage{multicol}

@@ -17,7 +17,7 @@ TEMPLATE_BEGIN = r"""
 
 \setlength{\columnsep}{1cm}
 
-\title{考研英语单词本}
+\title{考研英语词汇 - XXX}
 \author{RC}
 
 \begin{document}
@@ -62,12 +62,16 @@ TEMPLATE_JUST_WORD = r"""
 """
 
 SRC_WORDLIST = 'wordlist.csv'
-DST_WORDLIST = 'wordlist.tex'
+DST_LF_WORDLIST = 'wordlist-low-freq.tex'
+DST_HF_WORDLIST = 'wordlist-high-freq.tex'
 
-tex_file = open(DST_WORDLIST, 'w', encoding='utf-8')
-tex_file.write(TEMPLATE_BEGIN)
+lf_wordlist = open(DST_LF_WORDLIST, 'w', encoding='utf-8')
+hf_wordlist = open(DST_HF_WORDLIST, 'w', encoding='utf-8')
+lf_wordlist.write(TEMPLATE_BEGIN.replace('XXX', '低频词'))
+hf_wordlist.write(TEMPLATE_BEGIN.replace('XXX', '高频词'))
 
-words = []
+lf_words = []
+hf_words = []
 
 with open(SRC_WORDLIST, 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
@@ -77,34 +81,51 @@ with open(SRC_WORDLIST, 'r', encoding='utf-8') as f:
 
         word = row[0]
         explanations = row[1].splitlines()
+        freq = 'L' if row[2] == '低' else 'H'
 
         if not word:
             continue
 
-        words.append(word)
-        tex_file.write(
-            TEMPLATE_WORD.format(word=word,
-                                 explanations=r' \\ '.join(explanations)))
+        fmt_args = {'word': word, 'explanations': r' \\ '.join(explanations)}
+        if freq == 'L':
+            lf_words.append(word)
+            lf_wordlist.write(TEMPLATE_WORD.format(**fmt_args))
+        else:
+            hf_words.append(word)
+            hf_wordlist.write(TEMPLATE_WORD.format(**fmt_args))
 
-tex_file.write(TEMPLATE_MID)
-for w in words:
-    tex_file.write(TEMPLATE_JUST_WORD.format(word=w))
+lf_wordlist.write(TEMPLATE_MID)
+hf_wordlist.write(TEMPLATE_MID)
 
-tex_file.write(TEMPLATE_END)
-tex_file.close()
+for w in lf_words:
+    lf_wordlist.write(TEMPLATE_JUST_WORD.format(word=w))
+for w in hf_words:
+    hf_wordlist.write(TEMPLATE_JUST_WORD.format(word=w))
 
-cmd = f'xelatex -synctex=1 -interaction=nonstopmode -file-line-error -shell-escape "{DST_WORDLIST}"'
-os.system(cmd)
-os.system(cmd)
+lf_wordlist.write(TEMPLATE_END)
+hf_wordlist.write(TEMPLATE_END)
+lf_wordlist.close()
+hf_wordlist.close()
+
+cmd = 'xelatex -synctex=1 -interaction=nonstopmode -file-line-error -shell-escape "{}"'
+os.system(cmd.format(DST_LF_WORDLIST))
+os.system(cmd.format(DST_LF_WORDLIST))
+os.system(cmd.format(DST_HF_WORDLIST))
+os.system(cmd.format(DST_HF_WORDLIST))
 
 TO_REMOVE = [
-    '_minted-list',
-    '_minted-wordlist',
-    'wordlist.synctex.gz',
-    'wordlist.aux',
-    'wordlist.log',
-    'wordlist.out',
-    'wordlist.thm',
+    '_minted-wordlist-low-freq',
+    '_minted-wordlist-high-freq',
+    'wordlist-low-freq.synctex.gz',
+    'wordlist-high-freq.synctex.gz',
+    'wordlist-low-freq.aux',
+    'wordlist-high-freq.aux',
+    'wordlist-low-freq.log',
+    'wordlist-high-freq.log',
+    'wordlist-low-freq.out',
+    'wordlist-high-freq.out',
+    'wordlist-low-freq.thm',
+    'wordlist-high-freq.thm',
 ]
 
 for file in TO_REMOVE:

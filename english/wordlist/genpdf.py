@@ -22,16 +22,6 @@ TEMPLATE_BEGIN = r"""
 
 \begin{document}
 
-\maketitle
-\thispagestyle{empty}
-
-\clearpage
-\phantom{s}
-\thispagestyle{empty}
-
-\clearpage
-\setcounter{page}{1}
-
 \begin{multicols*}{2}
     \begin{description}[leftmargin=0.5cm]
 """

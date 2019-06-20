@@ -1,4 +1,4 @@
-# Lab 1, Ex 3
+# Lab 1, Ex 3: 分析 bootloader 进入保护模式的过程
 
 分析 `boot/bootasm.S` 了解了 bootloader 从实模式切换到保护模式的过程。
 

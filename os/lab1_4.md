@@ -1,4 +1,4 @@
-# Lab 1, Ex 4
+# Lab 1, Ex 4: 分析 bootloader 加载 ELF 格式的 OS 内核的过程
 
 通过分析 `boot/bootmain.c` 了解了 bootloader 加载内核程序的过程。
 

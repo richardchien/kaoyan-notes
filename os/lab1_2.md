@@ -1,4 +1,4 @@
-# Lab 1, Ex 2
+# Lab 1, Ex 2: 使用 QEMU 和 GDB 运行和调试程序
 
 ## GDB 启动配置
 

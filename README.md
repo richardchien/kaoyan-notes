@@ -1,6 +1,6 @@
 # 考研笔记
 
-2020 年考上海交大软件工程专业的笔记。
+2020 年考上海交大软件工程专硕的笔记。
 
 数学和专业课相关笔记内含 LaTeX 公式，建议 iOS 使用 MWeb 查看、电脑上使用 VS Code 预览或用 Chrome 加插件 [MathJax Plugin for Github](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima)。
 

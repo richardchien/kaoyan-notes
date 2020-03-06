@@ -1,0 +1,60 @@
+table.calendar {
+    font-family: arial, helvetica;
+    font-size: 10pt;
+    empty-cells: show;
+    border: 1px solid #000000;
+}
+table.calendar tr td {
+    border: 1px solid #aaaaaa;
+}
+table.calendar tr {
+   vertical-align: top;
+   height: 75px;
+   background: #EEEEEE;
+}
+table.calendar tr.header {
+    text-align: center;
+    height: auto;
+    font-weight: bold;
+}
+.Preparation {color: #003399}
+  .Due {
+	color: #aa0000;
+	font-weight: bold;
+}
+.ImportantDate {
+	color: #ff0000;
+	font-weight: bold;
+	font-style: italic;
+}
+
+  .DateFormat {font-size: 16pt}
+  .ClassDesc {
+	font-size: 9px;
+	font-style: italic;
+}
+
+.menuHead {
+	text-align: center;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+.menuItem {
+	font-family: "Trebuchet MS", Arial, Verdana;
+	color: rgb(255, 255, 255);	
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.titleHead {
+	font-family: "Trebuchet MS", Arial, Verdana;
+	font-size: 28px;
+}
+
+.titleHead.header{
+	padding-left: 58px;
+	padding-top: 2px;
+	color: white;
+}
